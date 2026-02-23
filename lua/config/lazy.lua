@@ -51,14 +51,3 @@ require("lazy").setup({
     },
   },
 })
-
--- Mason config
-require("mason").setup({
-  registries = {
-    "github:mason-org/mason-registry",
-    "github:Crashdummyy/mason-registry",
-  },
-})
-
--- Debug adapter
-require("config.debug")

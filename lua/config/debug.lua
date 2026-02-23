@@ -1,4 +1,19 @@
 local dap = require("dap")
+local mason_dap = require("mason-nvim-dap")
+local ui = require("dapui")
+local dap_virtual_text = require("nvim-dap-virtual-text")
+
+dap_virtual_text.setup({})
+
+mason_dap.setup({
+  ensure_installed = { "netcoredbg" },
+  automatic_installation = true,
+  handlers = {
+    function(config)
+      require("mason-nvim-dap").default_setup(config)
+    end,
+  },
+})
 
 dap.adapters.coreclr = {
   type = "executable",
@@ -11,16 +26,19 @@ dap.configurations.cs = {
     type = "coreclr",
     name = "Launch",
     request = "launch",
+    --[[
     program = function()
       return vim.fn.input("Path to DLL: ", vim.fn.getcwd() .. "/bin/Debug/net9.0/", "file")
     end,
+    ]]
+    program = "/Users/thomas/Developer/Projects/clk/clk/bin/Debug/net9.0/clk.dll",
     cwd = "${workspaceFolder}",
     args = { "show" },
     stopAtEntry = false,
   },
 }
 
-require("dapui").setup({
+ui.setup({
   layouts = {
     {
       elements = {
@@ -57,3 +75,16 @@ require("dapui").setup({
     },
   },
 })
+
+dap.listeners.before.attach.dapui_config = function()
+  ui.open()
+end
+dap.listeners.before.launch.dapui_config = function()
+  ui.open()
+end
+dap.listeners.before.event_terminated.dapui_config = function()
+  ui.close()
+end
+dap.listeners.before.event_exited.dapui_config = function()
+  ui.close()
+end

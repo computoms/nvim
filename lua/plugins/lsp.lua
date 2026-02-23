@@ -6,7 +6,7 @@ return {
     opts = {
       -- your configuration comes here; leave empty for default settings
     },
-    lazy = true,
+    ft = "cs",
   },
   {
     "nvim-treesitter/nvim-treesitter",
