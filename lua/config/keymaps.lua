@@ -2,6 +2,16 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
+-- Open find files from neo-tree with <C-p>
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "snacks_picker_list",
+  callback = function(event)
+    vim.keymap.set("n", "<C-p>", function()
+      Snacks.picker.files()
+    end, { buffer = event.buf, desc = "Find files" })
+  end,
+})
+
 -- Escape from terminal mode
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
 
@@ -39,4 +49,5 @@ wk.add({
   { "<leader>tp", "<cmd>lua require('neotest').output_panel.toggle()<cr>", desc = "Show tests panel" },
   { "<leader>ts", "<cmd>lua require('neotest').summary.toggle()<cr>", desc = "Show tests summary" },
   { "s", "cl" },
+  { "<C-p>", "<leader>ff", desc = "Find files", remap = true },
 })
