@@ -35,6 +35,10 @@ wk.add({
             statuscolumn = "",
             conceallevel = 3,
           },
+          bo = {
+            modifiable = true,
+            readonly = false,
+          },
         })
       else
         todo_win:toggle()
