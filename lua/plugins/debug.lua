@@ -1,6 +1,11 @@
 return {
   {
     "jay-babu/mason-nvim-dap.nvim",
+    opts = {
+      automatic_installation = {
+        exclude = { "chrome-debug-adapter" },
+      },
+    },
   },
   {
     "mfussenegger/nvim-dap",
@@ -59,6 +64,63 @@ return {
       local json = require("plenary.json")
       vscode.json_decode = function(str)
         return vim.json.decode(json.json_strip_comments(str))
+      end
+
+
+      -- js-debug-adapter (vscode-js-debug) for Electron
+      local dap = require("dap")
+      local js_debug = vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js"
+
+      local js_adapter = {
+        type = "server",
+        host = "::1",
+        port = "${port}",
+        executable = {
+          command = "node",
+          args = { js_debug, "${port}" },
+        },
+      }
+
+      for _, adapter in ipairs({ "pwa-node", "pwa-chrome" }) do
+        dap.adapters[adapter] = js_adapter
+      end
+
+      -- Remap legacy type names: transform config before sending to js-debug
+      dap.adapters["node"] = function(cb, config)
+        cb(js_adapter, vim.tbl_extend("force", config, { type = "pwa-node" }))
+      end
+      dap.adapters["chrome"] = function(cb, config)
+        cb(js_adapter, vim.tbl_extend("force", config, { type = "pwa-chrome" }))
+      end
+
+      for _, lang in ipairs({ "javascript", "typescript" }) do
+        dap.configurations[lang] = dap.configurations[lang] or {}
+        vim.list_extend(dap.configurations[lang], {
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch Electron (Main)",
+            runtimeExecutable = "electron",
+            args = { "." },
+            skipFiles = { "<node_internals>/**", "node_modules/**" },
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+          },
+          {
+            type = "pwa-node",
+            request = "attach",
+            name = "Attach to Electron (Main)",
+            port = 9229,
+            skipFiles = { "<node_internals>/**", "node_modules/**" },
+          },
+          {
+            type = "pwa-chrome",
+            request = "attach",
+            name = "Attach to Electron (Renderer)",
+            port = 9222,
+            webRoot = "${workspaceFolder}",
+            skipFiles = { "<node_internals>/**", "node_modules/**" },
+          },
+        })
       end
     end,
   },
