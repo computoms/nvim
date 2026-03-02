@@ -48,10 +48,15 @@ wk.add({
   },
   { "<leader>t", group = "Tests" },
   { "<leader>tr", "<cmd>lua require('neotest').run.run()<cr>", desc = "Run nearest test" },
-  { "<leader>ta", "<cmd>lua require('neotest').run.run({ suite = true })<cr>", desc = "Run all tests" },
+  { "<leader>ta", "<cmd>lua require('neotest').run.run({ suite = true})<cr>", desc = "Run all tests in file" },
   { "<leader>to", "<cmd>lua require('neotest').output.open()<cr>", desc = "Show tests output" },
   { "<leader>tp", "<cmd>lua require('neotest').output_panel.toggle()<cr>", desc = "Show tests panel" },
   { "<leader>ts", "<cmd>lua require('neotest').summary.toggle()<cr>", desc = "Show tests summary" },
+  {
+    "<leader>tw",
+    "<cmd>lua require('neotest').run.run({ jestCommand = 'jest --watch ' })<cr>",
+    desc = "Run tests in watch mode",
+  },
   { "s", "cl" },
   { "<C-p>", "<leader>ff", desc = "Find files", remap = true },
 })

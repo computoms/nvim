@@ -8,6 +8,7 @@ return {
         "shfmt",
         "flake8",
         "netcoredbg",
+        "js-debug-adapter",
       },
     },
   },
@@ -16,7 +17,9 @@ return {
     config = true,
     cmd = "ToggleTerm",
     build = ":ToggleTerm",
-    keys = { { "<C-t>", "<cmd>ToggleTerm<cr>", desc = "Toggle floating terminal" } },
+    keys = {
+      { "<C-t>", "<cmd>ToggleTerm<cr>", desc = "Toggle floating terminal" },
+    },
     opts = {
       open_mapping = [[<F4>]],
       direction = "horizontal",
